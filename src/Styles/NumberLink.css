@@ -1,0 +1,16 @@
+#numberLink{
+    width: 400px;
+    height: 300px;
+    float:left;
+    margin-left: 100px;
+    border-radius: 5px;
+}
+
+#number_title{
+    font-weight: 400;
+    margin-left: 200px;
+}
+
+#numberSection{
+    float: left;
+}

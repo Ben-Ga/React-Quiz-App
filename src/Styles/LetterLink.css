@@ -1,0 +1,17 @@
+#letterIMG{
+    float: left;
+    width: 400px;
+    height: 300px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+#letter_title{
+    font-weight: 400;
+    margin-left: 620px;
+    margin-top: 27px;
+}
+
+#letter_section{
+    float: left;
+}

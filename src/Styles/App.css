@@ -1,0 +1,13 @@
+.content{
+    max-width: 1400px;
+    margin: auto;
+    background-color: #646864;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: whitesmoke;
+    overflow: auto;
+
+}
+
+body{
+    background-color: #313331;
+}
