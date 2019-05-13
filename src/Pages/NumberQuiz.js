@@ -2,19 +2,24 @@ import React, { Component } from 'react'
 
 import '../Styles/NumQuiz.css'
 
-const correct = <p><span style={{color: 'green'}}>Correct</span></p>
-const incorrect = <p><span style={{color: 'red'}}>Incorrect</span></p>
+const correct = <p><span style={{color: 'green'}}><b>Correct</b></span></p>
+const incorrect = <p><span style={{color: 'red'}}><b>Incorrect</b></span></p>
 
 export class NumberQuiz extends Component {
   constructor(props){
     super(props);
 
     this.state = {
+      pickMin: 1,
+      pickMax: 3,
+      choosenOption: null,
       min: 2,
       max: 150,
       number1: null,
       number2: null,
+      option1: null,
       option2: null,
+      option3: null,
       answer: null,
       selected: false,
       outcome: null
@@ -23,10 +28,37 @@ export class NumberQuiz extends Component {
 
   componentDidMount(){
     this.setState({
+      choosenOption: this.chooseOption(this.state.pickMin, this.state.pickMax),
       number1: this.generateNums(this.state.min,this.state.max),
       number2: this.generateNums(this.state.min, this.state.max),
-      option2: this.generateNums(this.state.min, this.state.max)
+      answer: null,
+      outcome: null,
+      selected: false
     })
+    if(this.state.choosenOption === 1){
+      this.setState({
+        option1: this.state.number1 + this.state.number2,
+        option2: this.generateNums(this.state.min, this.state.max),
+        option3:this.generateNums(this.state.min,this.state.max),
+
+      })
+    }else if(this.state.choosenOption === 2){
+      this.setState({
+        option1: this.generateNums(this.state.min,this.state.max),
+        option2: this.state.number1 + this.state.number2,
+        option3:this.generateNums(this.state.min,this.state.max),
+      })
+    }else {
+      this.setState({
+        option1: this.generateNums(this.state.min,this.state.max),
+        option2: this.generateNums(this.state.min,this.state.max),
+        option3: this.state.number1 + this.state.number2,
+      })
+    }
+  }
+
+  chooseOption = (pickMin, pickMax) =>{
+    return Math.floor(Math.random()*(pickMax-pickMin+1)+pickMin)
   }
 
   generateNums = (min, max) =>{
@@ -53,20 +85,35 @@ export class NumberQuiz extends Component {
       selected: true 
     })
   }
+
+  getNext = () =>{
+    this.componentDidMount()
+  }
   
   render() {
     return (
-      <div>
-        <p>What is {this.state.number1} + {this.state.number2}</p>
-        <input type="radio" value={this.state.number1 + this.state.number2}
-         name="5+5" onChange={this.checkAns}/>{this.state.number1 + this.state.number2}
+      <div id="container">
+        <div id="question">
+          <p>What is {this.state.number1} + {this.state.number2}</p>
 
-        <input type="radio" value={this.state.option2}
-         name="5+5" />{this.state.option2}<p></p>
+          <input type="radio" value={this.state.option1}
+          name="option" onChange={this.checkAns}
+          />{this.state.option1}
 
-        <button type="submit" onClick={this.getAnswer}>Submit</button>
+          <input type="radio" value={this.state.option2}
+          name="option" />{this.state.option2}
 
-        <p id="answer">Answer: {this.state.answer} {this.state.outcome}</p>
+          <input type="radio" value={this.state.option3}
+          name="option" />{this.state.option3}<p></p>
+
+          <button id="submit_button" type="submit" 
+          onClick={this.getAnswer}>Check Answer</button>
+  
+          <p id="answer">Answer: {this.state.answer} {this.state.outcome}</p>
+        </div>
+        <div>
+          <button id="nxt_q" type="submit" onClick={this.getNext}>Next Question</button>
+        </div>
       </div>
     )
   }
