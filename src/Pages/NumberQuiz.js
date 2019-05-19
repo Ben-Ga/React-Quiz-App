@@ -35,7 +35,9 @@ export class NumberQuiz extends Component {
       outcome: null,
       selected: false
     })
+    console.log("Num 1 " + this.state.number1 + " Num 2 " + this.state.number2)
     if(this.state.choosenOption === 1){
+      console.log("In 1")
       this.setState({
         option1: this.state.number1 + this.state.number2,
         option2: this.generateNums(this.state.min, this.state.max),
@@ -43,12 +45,14 @@ export class NumberQuiz extends Component {
 
       })
     }else if(this.state.choosenOption === 2){
+      console.log("In 2")
       this.setState({
         option1: this.generateNums(this.state.min,this.state.max),
         option2: this.state.number1 + this.state.number2,
         option3:this.generateNums(this.state.min,this.state.max),
       })
     }else {
+      console.log("In 3")
       this.setState({
         option1: this.generateNums(this.state.min,this.state.max),
         option2: this.generateNums(this.state.min,this.state.max),

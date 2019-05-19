@@ -1,0 +1,17 @@
+#lettercontainer{
+    background-color: whitesmoke;
+    border: 3px dashed gray;
+    width: 700px;
+}
+
+#lettercontainer > p{
+    color: black;
+}
+
+h2{
+    color: #65d145
+}
+
+*{
+    margin-left: 20px;
+}
