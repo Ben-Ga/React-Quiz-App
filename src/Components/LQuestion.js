@@ -2,19 +2,6 @@ import React, { Component } from 'react'
 
 import '../Styles/question.css'
 
-var questions = [
-    "Word for Hello?",
-    "Sensei would be used to describe your?",
-    "Word for 1 is?",
-    "Phrase 'eight seconds have passed' is?"
- ]
-
- var answers = [
-   "Ohayo",
-   "Teacher/Master",
-   "ichi",
-   "hachi-Byo tachimashita"
- ]
 
 export class LQuestion extends Component {
 
@@ -22,21 +9,24 @@ export class LQuestion extends Component {
         super(props);
 
         this.state = {
-            min: 0,
+            min: 1,
             max: 3,
-            qBank: questions,
-            aBank: answers,
+            qBank: [],
+            aBank: [],
             option1: null,
             option2: null,
             option3: null,
             chosenQuestion: null,
-            test: 5,
+            rand: null,
 
         }
     }
 
     componentDidMount(){
-      this.getQuestion()
+      this.fetchQuestions()
+      this.setState({
+        rand: this.genNumber(this.state.min, this.state.max)
+      })
     }
 
 
@@ -44,16 +34,38 @@ export class LQuestion extends Component {
         return Math.floor(Math.random()*(min,max+1)+min)
     }
 
-    getQuestion = () => {
-      this.setState({
-        chosenQuestion: this.state.qBank[this.genNumber(this.state.min, this.state.max)]
-      })
-    }
+
+    fetchQuestions = () =>{
+      fetch('http://localhost:4000/list')
+        .then(response => response.json())
+        .then(response => this.setState({
+          qBank: response.data
+        }))
+        // .then(({ data }) => {
+        //   console.log(data)
+        // })
+        .catch(err => console.error(err))
+    } 
+
+    renderQuestion = ({QuestionID, question}) => <div key={QuestionID}>{question}</div> 
+
+    renderRandom = ({QuestionID, question}) => {
+      if(QuestionID === this.state.rand){
+        return(
+          <div key={QuestionID}>{question}</div>
+        )
+      }else{
+
+      }
+
+  }
+
+
 
   render() {
     return (
       <div>
-        <p>{this.state.chosenQuestion}</p>
+        {this.state.qBank.map(this.renderRandom)}
         <input type="radio" />{this.state.option1}
         <input type="radio" />{this.state.option2}
         <input type="radio" />{this.state.option3}
