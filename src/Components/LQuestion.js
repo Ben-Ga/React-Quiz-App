@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 
 import '../Styles/question.css'
 
+let fillerCount = 0;
+let randChoice = null;
+let FILLER_LOWER_BOUND = 1
+let FILLER_UPPER_BOUND = 4
 
 export class LQuestion extends Component {
 
@@ -13,22 +17,23 @@ export class LQuestion extends Component {
             max: 3,
             qBank: [],
             aBank: [],
+            fBank: [],
             option1: null,
             option2: null,
             option3: null,
             chosenQuestion: null,
-            rand: null,
-
+            rand: 2,
         }
     }
+
 
     componentDidMount(){
       this.fetchQuestions()
       this.setState({
         rand: this.genNumber(this.state.min, this.state.max)
       })
+      this.fetchFiller()
     }
-
 
     genNumber = (min, max) => {
         return Math.floor(Math.random()*(min,max+1)+min)
@@ -41,13 +46,20 @@ export class LQuestion extends Component {
         .then(response => this.setState({
           qBank: response.data
         }))
-        // .then(({ data }) => {
-        //   console.log(data)
-        // })
         .catch(err => console.error(err))
     } 
 
     renderQuestion = ({QuestionID, question}) => <div key={QuestionID}>{question}</div> 
+
+
+    fetchFiller = ()  =>{
+      fetch('http://localhost:4000/filler')
+        .then(response => response.json())
+        .then(response => this.setState({
+          fBank: response.data
+        }))
+        .catch(err => console.error(err))
+    }
 
     renderRandom = ({QuestionID, question}) => {
       if(QuestionID === this.state.rand){
@@ -57,8 +69,20 @@ export class LQuestion extends Component {
       }else{
 
       }
+    }
 
-  }
+    renderFiller = ({FillerID, filloption}) => {
+      console.log("RandCHoice in method = " + randChoice)
+      randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND)
+      if(FillerID === randChoice){
+        console.log(randChoice + " is equal to " + FillerID)
+        return(
+          <div key={FillerID}>{filloption}</div>
+        )
+      }else{
+      }
+    }
+
 
 
 
@@ -66,9 +90,9 @@ export class LQuestion extends Component {
     return (
       <div>
         {this.state.qBank.map(this.renderRandom)}
-        <input type="radio" />{this.state.option1}
-        <input type="radio" />{this.state.option2}
-        <input type="radio" />{this.state.option3}
+        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
+        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
+        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
       </div>
     )
   }
