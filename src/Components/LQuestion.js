@@ -4,8 +4,10 @@ import '../Styles/question.css'
 
 let fillerCount = 0;
 let randChoice = null;
+let found = false;
+let randomised = false;
 let FILLER_LOWER_BOUND = 1
-let FILLER_UPPER_BOUND = 4
+let FILLER_UPPER_BOUND = 10
 
 export class LQuestion extends Component {
 
@@ -33,6 +35,10 @@ export class LQuestion extends Component {
         rand: this.genNumber(this.state.min, this.state.max)
       })
       this.fetchFiller()
+    }
+
+    componentDidUpdate(){
+      console.log("Components did update has been called")
     }
 
     genNumber = (min, max) => {
@@ -72,14 +78,31 @@ export class LQuestion extends Component {
     }
 
     renderFiller = ({FillerID, filloption}) => {
-      console.log("RandCHoice in method = " + randChoice)
-      randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND)
-      if(FillerID === randChoice){
+      if(!randomised){
+        randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND)  /*Add something here so that the rand is only changed once for each of the cycles through options */
+        randomised = true;
+      }
+      console.log("Rand = " + randChoice + "  FillerID:   " + FillerID )
+      if(FillerID === (FILLER_UPPER_BOUND + 1)){
+        if(found){ {/*If a match has already been made, reset and move on to the next one */}
+          found = false
+          randomised = false;
+          return 
+        }else{ {/*If a match has not already been found, it must be the last so reset for that and dont return yet */}
+          found = false
+        }
+        console.log("Found being reset")
+      }
+      if(FillerID === randChoice && found !== true){ {/*This means that only 1 filler displayed for each  */}
         console.log(randChoice + " is equal to " + FillerID)
+        found = true
+        if(FillerID == (FILLER_UPPER_BOUND + 1)){
+          found = false; {/*This will occur if no match is found before the last element  */}
+          randomised = false;
+        }
         return(
           <div key={FillerID}>{filloption}</div>
         )
-      }else{
       }
     }
 
