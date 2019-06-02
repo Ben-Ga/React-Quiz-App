@@ -9,6 +9,7 @@ let found = false;
 let randomised = false;
 let FILLER_LOWER_BOUND = 1
 let FILLER_UPPER_BOUND = 10
+let chosenQuestion = null;
 
 export class LQuestion extends Component {
 
@@ -21,10 +22,6 @@ export class LQuestion extends Component {
             qBank: [],
             aBank: [],
             fBank: [],
-            option1: null,
-            option2: null,
-            option3: null,
-            chosenQuestion: null,
             rand: 2,
         }
     }
@@ -36,11 +33,9 @@ export class LQuestion extends Component {
         rand: this.genNumber(this.state.min, this.state.max)
       })
       this.fetchFiller()
+      this.fetchAnswers()
     }
 
-    componentDidUpdate(){
-      console.log("Components did update has been called")
-    }
 
     genNumber = (min, max) => {
         return Math.floor(Math.random()*(min,max+1)+min)
@@ -56,7 +51,24 @@ export class LQuestion extends Component {
         .catch(err => console.error(err))
     } 
 
+    fetchAnswers = () =>{
+      fetch('http://localhost:4000/answers')
+      .then(response => response.json())
+      .then(response => this.setState({
+        aBank : response.data 
+      }))
+      .catch(err => console.log(err))
+    }
+
     renderQuestion = ({QuestionID, question}) => <div key={QuestionID}>{question}</div> 
+
+    renderAnswer = ({AnswerID, answer}) => {
+      if(AnswerID === chosenQuestion){
+        return(
+          <p key={AnswerID}>{answer}</p>
+        )
+      }
+    }
 
 
     fetchFiller = ()  =>{
@@ -70,6 +82,7 @@ export class LQuestion extends Component {
 
     renderRandom = ({QuestionID, question}) => {
       if(QuestionID === this.state.rand){
+        chosenQuestion = QuestionID
         return(
           <div key={QuestionID}>{question}</div>
         )
@@ -88,7 +101,6 @@ export class LQuestion extends Component {
         randomised = true;
 
       }
-      console.log("Rand = " + randChoice + "  FillerID:   " + FillerID )
       if(FillerID === (FILLER_UPPER_BOUND + 1)){
         if(found){ {/*If a match has already been made, reset and move on to the next one */}
           found = false
@@ -97,19 +109,14 @@ export class LQuestion extends Component {
         }else{ {/*If a match has not already been found, it must be the last so reset for that and dont return yet */}
           found = false
         }
-        console.log("Found being reset")
       }
       for(let i = 0; i < picked.length; i++){
         if(randChoice === picked[i] && found !== true){
-          console.log(FillerID + " has already been found before")
           randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND);
-          console.log("Generating a new random filler " + randChoice)
         }
       }
       if(FillerID === randChoice && found !== true){ {/*This means that only 1 filler displayed for each  */}
-        console.log(randChoice + " is equal to " + FillerID)
         picked.push(randChoice) /*Add the element to a list so it wont be picked again */
-        console.log("Adding element to picked " + picked)
         found = true
         if(FillerID == (FILLER_UPPER_BOUND + 1)){
           found = false; {/*This will occur if no match is found before the last element  */}
@@ -122,8 +129,6 @@ export class LQuestion extends Component {
     }
 
 
-
-
   render() {
     return (
       <div>
@@ -131,6 +136,8 @@ export class LQuestion extends Component {
         <input type="radio" />{this.state.fBank.map(this.renderFiller)}
         <input type="radio" />{this.state.fBank.map(this.renderFiller)}
         <input type="radio" />{this.state.fBank.map(this.renderFiller)}
+        <div>{this.state.aBank.map(this.renderAnswer)}</div>
+        {console.log(this.state.aBank)}
       </div>
     )
   }
