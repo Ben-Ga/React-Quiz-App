@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import '../Styles/question.css'
 
 let fillerCount = 0;
+let picked = [];
 let randChoice = null;
 let found = false;
 let randomised = false;
@@ -77,10 +78,15 @@ export class LQuestion extends Component {
       }
     }
 
+    genAnsPlaceholder = () =>{
+      return Math.floor(Math.random() * (1, 4)+ 1)//Gen a number for which of the options slots will hold the answer 
+    }
+
     renderFiller = ({FillerID, filloption}) => {
       if(!randomised){
         randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND)  /*Add something here so that the rand is only changed once for each of the cycles through options */
         randomised = true;
+
       }
       console.log("Rand = " + randChoice + "  FillerID:   " + FillerID )
       if(FillerID === (FILLER_UPPER_BOUND + 1)){
@@ -93,8 +99,17 @@ export class LQuestion extends Component {
         }
         console.log("Found being reset")
       }
+      for(let i = 0; i < picked.length; i++){
+        if(randChoice === picked[i] && found !== true){
+          console.log(FillerID + " has already been found before")
+          randChoice = this.genNumber(FILLER_LOWER_BOUND, FILLER_UPPER_BOUND);
+          console.log("Generating a new random filler " + randChoice)
+        }
+      }
       if(FillerID === randChoice && found !== true){ {/*This means that only 1 filler displayed for each  */}
         console.log(randChoice + " is equal to " + FillerID)
+        picked.push(randChoice) /*Add the element to a list so it wont be picked again */
+        console.log("Adding element to picked " + picked)
         found = true
         if(FillerID == (FILLER_UPPER_BOUND + 1)){
           found = false; {/*This will occur if no match is found before the last element  */}
