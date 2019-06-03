@@ -23,6 +23,7 @@ export class LQuestion extends Component {
             aBank: [],
             fBank: [],
             rand: 2,
+            showAns: 'answer',
         }
     }
 
@@ -129,14 +130,21 @@ export class LQuestion extends Component {
     }
 
 
+    appendStyle = () => {
+      this.setState({
+        showAns: 'answer .show'
+      })
+    }
+
   render() {
     return (
       <div>
         {this.state.qBank.map(this.renderRandom)}
-        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
-        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
-        <input type="radio" />{this.state.fBank.map(this.renderFiller)}
-        <div>{this.state.aBank.map(this.renderAnswer)}</div>
+        <input onChange={this.appendStyle} type="radio" />{this.state.fBank.map(this.renderFiller)}
+        <input onChange={this.appendStyle} type="radio" />{this.state.fBank.map(this.renderFiller)}
+        <input onChange={this.appendStyle} type="radio" />{this.state.fBank.map(this.renderFiller)}
+        
+        <div id={this.state.showAns}>{this.state.aBank.map(this.renderAnswer)}</div>
         {console.log(this.state.aBank)}
       </div>
     )
